@@ -8,8 +8,12 @@
 
 #include <AFMotor.h>
 
+#include <Servo.h>
+Servo motor_clip;//for clipping object
+Servo motor_updown;//for arm up and down
+
 //initial motors pin
-AF_DCMotor motor1(1, MOTOR12_1KHZ); 
+AF_DCMotor motor1(1, MOTOR12_1KHZ);
 AF_DCMotor motor2(2, MOTOR12_1KHZ); 
 AF_DCMotor motor3(3, MOTOR34_1KHZ);
 AF_DCMotor motor4(4, MOTOR34_1KHZ);
@@ -19,6 +23,10 @@ char command;
 void setup() 
 {       
   Serial.begin(9600);  //Set the baud rate to your Bluetooth module.
+  motor_clip.attach(9);// set this servo at pin 9
+  motor_clip.write(0);//initialize servo at zero degree
+  motor_updown.attach(11);// set this servo at pin 11
+  motor_updown.write(0);//initialize servo at zero degree
 }
 
 void loop(){
@@ -27,7 +35,15 @@ void loop(){
     Stop(); //initialize with motors stoped
     //Change pin mode only if new command is different from previous.   
     //Serial.println(command);
+    motor_clip.write(0);
+    motor_updown.write(0);
     switch(command){
+    case 'W':  
+      motor_updown.write(180);
+      break;
+    case 'U':  
+      motor_clip.write(90);
+      break;
     case 'F':  
       forward();
       break;
@@ -40,6 +56,8 @@ void loop(){
     case 'R':
       right();
       break;
+    
+    
     }
   } 
 }
